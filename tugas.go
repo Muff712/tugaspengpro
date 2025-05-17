@@ -3,9 +3,9 @@ package main
 import "fmt"
 
 type tim struct {
-	nama                                                                                string
-	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
-	macthrate                                                                           float32
+	nama                                                                                           string
+	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota, jumlahtim int
+	macthrate                                                                                      float32
 }
 
 type pemain struct {
@@ -13,6 +13,13 @@ type pemain struct {
 	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
 	posisi                                                                              string
 }
+type pertandingan struct {
+	tim1, tim2 tim.nama
+}
+
+type tm [100 - 1]tim
+type pm [100 - 1]pemain
+type pt [100 - 1]pertandingan
 
 func main() {
 	var a string
@@ -89,6 +96,13 @@ func hapusdata() {
 	}
 }
 
-func inputtim(a tim) {
-
+func inputtim(a *tm, b *int) {
+	fmt.Print("masukkan nama tim : ")
+	fmt.Scan(&b)
+	for i := 0; i < *b; i++ {
+		fmt.Print("masukkan nama tim : ")
+		fmt.Scan(&a[i].nama)
+		fmt.Print("masukkan jumlah anggota : ")
+		fmt.Scan(&a[i].jumlahanggota)
+	}
 }
