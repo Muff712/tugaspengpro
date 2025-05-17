@@ -2,6 +2,18 @@ package main
 
 import "fmt"
 
+type tim struct {
+	nama                                                                                string
+	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
+	macthrate                                                                           float32
+}
+
+type pemain struct {
+	nama                                                                                string
+	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
+	posisi                                                                              string
+}
+
 func main() {
 	var a string
 
@@ -26,14 +38,57 @@ func menuadmin() {
 	fmt.Println("---MENU---")
 	fmt.Println("1. Input data ")
 	fmt.Println("2. hapus data ")
-	fmt.Println("2. hapus data ")
+	fmt.Println("3. keluar ")
 
 	fmt.Scan(&a)
 
 	switch a {
 	case 1:
-		Inputdata()
+		inputdata()
 	case 2:
 		hapusdata()
 	}
+}
+
+func inputdata() {
+	var a int
+
+	fmt.Println("---MENU---")
+	fmt.Println("1. Input data tim ")
+	fmt.Println("2. input data pemain")
+	fmt.Println("3. input data pertandingan")
+	fmt.Println("4. keluar ")
+	fmt.Scan(&a)
+
+	switch a {
+	case 1:
+		inputtim()
+	case 2:
+		inputpemain()
+	case 3:
+		inputpertandingan()
+	}
+}
+func hapusdata() {
+	var a int
+
+	fmt.Println("---MENU---")
+	fmt.Println("1. Hapus data tim ")
+	fmt.Println("2. hapus data pemain")
+	fmt.Println("3. hapus data pertandingan")
+	fmt.Println("4. keluar ")
+	fmt.Scan(&a)
+
+	switch a {
+	case 1:
+		hapustim()
+	case 2:
+		hapuspemain()
+	case 3:
+		hapuspertandingan()
+	}
+}
+
+func inputtim(a tim) {
+
 }
