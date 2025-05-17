@@ -9,12 +9,12 @@ type tim struct {
 }
 
 type pemain struct {
-	nama                                                                                string
+	nama, namatim                                                                       string
 	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
 	posisi                                                                              string
 }
 type pertandingan struct {
-	tim1, tim2 tim.nama
+	tim1, tim2 string
 }
 
 type tm [100 - 1]tim
@@ -97,12 +97,24 @@ func hapusdata() {
 }
 
 func inputtim(a *tm, b *int) {
-	fmt.Print("masukkan nama tim : ")
+	fmt.Print("masukkan jumlah tim : ")
 	fmt.Scan(&b)
 	for i := 0; i < *b; i++ {
 		fmt.Print("masukkan nama tim : ")
 		fmt.Scan(&a[i].nama)
-		fmt.Print("masukkan jumlah anggota : ")
-		fmt.Scan(&a[i].jumlahanggota)
+	}
+}
+
+func inputpemain(a *pm, b *int, c *string) {
+	fmt.Print("masukkan nama tim : ")
+	fmt.Scan(&c)
+	fmt.Print("masukkan jumlah pemain : ")
+	fmt.Scan(&b)
+	for i := 0; i < *b; i++ {
+		fmt.Print("masukkan nama pemain : ")
+		fmt.Scan(&a[i].nama)
+		fmt.Print("masukkan posisi pemain : ")
+		fmt.Scan(&a[i].posisi)
+		a[i].namatim = *c
 	}
 }
