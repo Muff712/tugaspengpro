@@ -198,3 +198,30 @@ func tampilpemain(a *pm, b *int) {
 		fmt.Println(" %s ", a[i].nama)
 	}
 }
+
+#JadwalOtomatis
+func jadwalOtomatis(timData *tm, jumlahTim int, jadwal *pt, jumlahJadwal *int) {
+	for i := 0; i < jumlahTim; i++ {
+		for j := i + 1; j < jumlahTim; j++ {
+			jadwal[*jumlahJadwal].tim1 = timData[i].nama
+			jadwal[*jumlahJadwal].tim2 = timData[j].nama
+			(*jumlahJadwal)++
+		}
+	}
+	fmt.Println("Jadwal pertandingan otomatis telah dibuat.")
+}
+
+#Statistik
+func tampilStatistikTim(data *tm, jumlah int) {
+	for i := 0; i < jumlah; i++ {
+		fmt.Printf("Tim: %s | Main: %d | Menang: %d | Seri: %d | Kalah: %d\n",
+			data[i].nama, data[i].jumlahpertandingan, data[i].jumlahmenang, data[i].jumlahseri, data[i].jumlahkalah)
+	}
+}
+
+func tampilStatistikPemain(data *pm, jumlah int) {
+	for i := 0; i < jumlah; i++ {
+		fmt.Printf("Pemain: %s | Tim: %s | Posisi: %s | Main: %d\n",
+			data[i].nama, data[i].namatim, data[i].posisi, data[i].jumlahpertandingan)
+	}
+}
