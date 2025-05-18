@@ -17,12 +17,15 @@ type pertandingan struct {
 	tim1, tim2 string
 }
 
+var totaltim int
+
+totaltim = 0
+
 type tm [100 - 1]tim
 type pm [100 - 1]pemain
 type pt [100 - 1]pertandingan
 
-func main() {
-	var a string
+func menu( a string) {
 
 	fmt.Println("pilih pengguna : ")
 	fmt.Println(" Admin ")
@@ -45,6 +48,7 @@ func menuadmin() {
 	fmt.Println("---MENU---")
 	fmt.Println("1. Input data ")
 	fmt.Println("2. hapus data ")
+	fmt.Println("3. tampilkan data ")
 	fmt.Println("3. keluar ")
 
 	fmt.Scan(&a)
@@ -54,6 +58,8 @@ func menuadmin() {
 		inputdata()
 	case 2:
 		hapusdata()
+	case 3:
+		tampildata()
 	}
 }
 
@@ -82,7 +88,6 @@ func hapusdata() {
 	fmt.Println("---MENU---")
 	fmt.Println("1. Hapus data tim ")
 	fmt.Println("2. hapus data pemain")
-	fmt.Println("3. hapus data pertandingan")
 	fmt.Println("4. keluar ")
 	fmt.Scan(&a)
 
@@ -91,8 +96,6 @@ func hapusdata() {
 		hapustim()
 	case 2:
 		hapuspemain()
-	case 3:
-		hapuspertandingan()
 	}
 }
 
@@ -103,6 +106,7 @@ func inputtim(a *tm, b *int) {
 		fmt.Print("masukkan nama tim : ")
 		fmt.Scan(&a[i].nama)
 	}
+	totaltim = totaltim + *b
 }
 
 func inputpemain(a *pm, b *int, c *string) {
@@ -116,5 +120,81 @@ func inputpemain(a *pm, b *int, c *string) {
 		fmt.Print("masukkan posisi pemain : ")
 		fmt.Scan(&a[i].posisi)
 		a[i].namatim = *c
+	}
+}
+
+func hapustim(a *tm, b *int) {
+	var c string
+	fmt.Print("masukkan nama tim yang ingin dihapus : ")
+	fmt.Scan(&c)
+	for i := 0; i < *b; i++ {
+		if a[i].nama == c {
+			a[i] = ""
+			fmt.Println("data tim berhasil dihapus")
+		} else {
+			fmt.Println("data tim tidak ditemukan")
+		}
+	}
+}
+
+func hapuspemain(a *pm, b *int) {
+	var c string
+	fmt.Print("masukkan nama pemain yang ingin dihapus : ")
+	fmt.Scan(&c)
+	for i := 0; i < *b; i++ {
+		if a[i].nama == c {
+			a[i] = ""
+			fmt.Println("data pemain berhasil dihapus")
+		} else {
+			fmt.Println("data pemain tidak ditemukan")
+		}
+	}
+}
+
+func inputpertandingan(a *pt, b *int) {
+	var d int
+	fmt.Print("masukkan jumlah pertandingan : ")
+	fmt.Scan(&b)
+	d = 1
+	for i := 0; i < *b; i++ {
+		fmt.Print("masukkan pertandingan ke-", d, " : ")
+		d++
+		fmt.Print("masukkan nama tim 1 : ")
+		fmt.Scan(&a[i].tim1)
+		fmt.Print("masukkan nama tim 2 : ")
+		fmt.Scan(&a[i].tim2)
+	}
+}
+
+func menuuser() {
+	var a int
+	fmt.Println("---MENU---")
+	fmt.Println("1. Tampilkan data tim ")
+	fmt.Println("2. tampilkan data pemain")
+	fmt.Println("3. tampilkan data pertandingan")
+	fmt.Println("4. keluar ")
+	fmt.Scan(&a)
+
+	switch a {
+	case 1:
+		tampiltim()
+	case 2:
+		tampilpemain()
+	case 3:
+		tampilpertandingan()
+	}
+}
+
+func tampiltim(a *tm, b *int) {	
+	fmt.Println("data tim : ")
+	for i := 0; i < *b; i++ {
+		fmt.Println(" %s ", a[i].nama)
+	}
+}
+
+func tampilpemain(a *pm, b *int) {
+	fmt.Println("data pemain : ")
+	for i := 0; i < *b; i++ {
+		fmt.Println(" %s ", a[i].nama)
 	}
 }
