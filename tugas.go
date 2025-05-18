@@ -19,13 +19,11 @@ type pertandingan struct {
 
 var totaltim int
 
-totaltim = 0
-
 type tm [100 - 1]tim
 type pm [100 - 1]pemain
 type pt [100 - 1]pertandingan
 
-func menu( a string) {
+func menu(a string) {
 
 	fmt.Println("pilih pengguna : ")
 	fmt.Println(" Admin ")
@@ -100,16 +98,35 @@ func hapusdata() {
 }
 
 func inputtim(a *tm, b *int) {
+	var v string
 	fmt.Print("masukkan jumlah tim : ")
 	fmt.Scan(&b)
 	for i := 0; i < *b; i++ {
 		fmt.Print("masukkan nama tim : ")
 		fmt.Scan(&a[i].nama)
+		fmt.Print(" riwayat pertandingan tim : ")
+		fmt.Scan(&v)
+		if v == "ya" {
+			fmt.Print("masukkan jumlah pertandingan : ")
+			fmt.Scan(&a[i].jumlahpertandingan)
+			fmt.Print("masukkan jumlah menang : ")
+			fmt.Scan(&a[i].jumlahmenang)
+			fmt.Print("masukkan jumlah seri : ")
+			fmt.Scan(&a[i].jumlahseri)
+			fmt.Print("masukkan jumlah kalah : ")
+			fmt.Scan(&a[i].jumlahkalah)
+		} else {
+			a[i].jumlahpertandingan = 0
+			a[i].jumlahmenang = 0
+			a[i].jumlahseri = 0
+			a[i].jumlahkalah = 0
+		}
 	}
 	totaltim = totaltim + *b
 }
 
 func inputpemain(a *pm, b *int, c *string) {
+	var e string
 	fmt.Print("masukkan nama tim : ")
 	fmt.Scan(&c)
 	fmt.Print("masukkan jumlah pemain : ")
@@ -119,6 +136,23 @@ func inputpemain(a *pm, b *int, c *string) {
 		fmt.Scan(&a[i].nama)
 		fmt.Print("masukkan posisi pemain : ")
 		fmt.Scan(&a[i].posisi)
+		fmt.Print("riwayat pertandingan pemain : ")
+		fmt.Scan(&e)
+		if e == "ya" {
+			fmt.Print("masukkan jumlah pertandingan : ")
+			fmt.Scan(&a[i].jumlahpertandingan)
+			fmt.Print("masukkan jumlah menang : ")
+			fmt.Scan(&a[i].jumlahmenang)
+			fmt.Print("masukkan jumlah seri : ")
+			fmt.Scan(&a[i].jumlahseri)
+			fmt.Print("masukkan jumlah kalah : ")
+			fmt.Scan(&a[i].jumlahkalah)
+		} else {
+			a[i].jumlahpertandingan = 0
+			a[i].jumlahmenang = 0
+			a[i].jumlahseri = 0
+			a[i].jumlahkalah = 0
+		}
 		a[i].namatim = *c
 	}
 }
@@ -143,7 +177,7 @@ func hapuspemain(a *pm, b *int) {
 	fmt.Scan(&c)
 	for i := 0; i < *b; i++ {
 		if a[i].nama == c {
-			a[i] = ""
+			a[i] = pemain{}
 			fmt.Println("data pemain berhasil dihapus")
 		} else {
 			fmt.Println("data pemain tidak ditemukan")
@@ -185,7 +219,7 @@ func menuuser() {
 	}
 }
 
-func tampiltim(a *tm, b *int) {	
+func tampiltim(a *tm, b *int) {
 	fmt.Println("data tim : ")
 	for i := 0; i < *b; i++ {
 		fmt.Println(" %s ", a[i].nama)
