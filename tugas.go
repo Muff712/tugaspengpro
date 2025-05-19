@@ -355,3 +355,7 @@ func main() {
 		}
 	}
 }
+
+func test() {
+
+}
