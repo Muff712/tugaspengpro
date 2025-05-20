@@ -92,7 +92,7 @@ func inputdata() {
 	var a int
 
 	fmt.Println("---MENU---")
-	fmt.Println("1. Input data tim ")
+	fmt.Println("1. Input data tim: ")
 	fmt.Println("2. input data pemain")
 	fmt.Println("3. input data pertandingan")
 	fmt.Println("4. keluar ")
