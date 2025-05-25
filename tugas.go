@@ -1,357 +1,379 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
 const (
-	MaxTeams   = 100
-	MaxPlayers = 100
-	MaxMatches = 100
+	MaksimalTim          = 100
+	MaksimalPemain       = 100
+	MaksimalPertandingan = 100
 )
 
-type tim struct {
-	nama                                                                                           string
-	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota, jumlahtim int
-	macthrate                                                                                      float32
+type Tim struct {
+	Nama                                                                                string
+	JumlahPertandingan, Peringkat, JumlahMenang, JumlahSeri, JumlahKalah, JumlahAnggota int
+	RasioMenang                                                                         float32
 }
 
-type pemain struct {
-	nama, namatim                                                                       string
-	jumlahpertandingan, peringkat, jumlahmenang, jumlahseri, jumlahkalah, jumlahanggota int
-	posisi                                                                              string
-}
-type pertandingan struct {
-	tim1, tim2 string
-	hari       string
-	jam        int
+type DaftarTim struct {
+	Tim []Tim
 }
 
-var totaltim int
-
-type tm [100 - 1]tim
-type pm [100 - 1]pemain
-type pt [100 - 1]pertandingan
-
-type MenuOption struct {
-	ID          int
-	Description string
+type Pemain struct {
+	Nama               string
+	NamaTim            string
+	Posisi             string
 }
 
-func menu() error {
-	var choice string
-	options := []string{"Admin", "User", "Keluar"}
+type DaftarPemain struct {
+	Pemain []Pemain
+	Jumlah int
+}
 
+type Pertandingan struct {
+	Tim1, Tim2  string
+	Hari        string
+	Jam         int
+	HasilTim1   int
+	HasilTim2   int
+}
+
+type DaftarPertandingan struct {
+	Pertandingan []Pertandingan
+	Jumlah       int
+}
+
+func Menu() {
+	var pilihan string
 	fmt.Println("Pilih pengguna:")
-	for _, opt := range options {
-		fmt.Printf(" %s\n", opt)
-	}
+	fmt.Println(" Admin")
+	fmt.Println(" User")
+	fmt.Println(" Keluar")
+	fmt.Scan(&pilihan)
 
-	if _, err := fmt.Scan(&choice); err != nil {
-		return fmt.Errorf("invalid input: %v", err)
-	}
-
-	switch strings.ToLower(choice) {
-	case "admin":
-		return menuadmin()
-	case "user":
-		return menuuser()
-	case "keluar":
+	if pilihan == "admin" || pilihan == "Admin" {
+		MenuAdmin()
+	} else if pilihan == "user" || pilihan == "User" {
+		MenuPengguna()
+	} else if pilihan == "keluar" || pilihan == "Keluar" {
 		fmt.Println("Anda keluar")
-		return nil
-	default:
-		return fmt.Errorf("pilihan tidak valid")
+		return
+	} else {
+		fmt.Println("Pilihan tidak valid")
 	}
 }
 
-func menuadmin() error {
-	var a int
-	fmt.Println("---MENU---")
-	fmt.Println("1. Input data ")
-	fmt.Println("2. hapus data ")
-	fmt.Println("3. tampilkan data ")
-	fmt.Println("4. keluar ")
+func MenuAdmin() {
+	var pilihan int
+	fmt.Println("---MENU ADMIN---")
+	fmt.Println("1. Input Data")
+	fmt.Println("2. Hapus Data")
+	fmt.Println("3. Tampilkan Data")
+	fmt.Println("4. Keluar")
+	fmt.Println("5. Kembali ke Menu Utama")
+	fmt.Scan(&pilihan)
 
-	if _, err := fmt.Scan(&a); err != nil {
-		return fmt.Errorf("invalid input: %v", err)
-	}
-
-	switch a {
+	switch pilihan {
 	case 1:
-		inputdata()
+		InputData()
 	case 2:
-		hapusdata()
+		HapusData()
 	case 3:
-		menuuser()
+		MenuPengguna()
+	case 4:
+		return
+	case 5:
+		Menu()
 	}
-	return nil
+	fmt.Println("Pilihan tidak valid")
+	MenuAdmin()
 }
 
-func inputdata() {
-	var a int
+func InputData() {
+	var pilihan int
+	fmt.Println("---MENU INPUT---")
+	fmt.Println("1. Input Data Tim")
+	fmt.Println("2. Input Data Pemain")
+	fmt.Println("3. Input Data Pertandingan")
+	fmt.Println("4. Keluar")
+	fmt.Println("5. Kembali ke Menu Admin")
+	fmt.Scan(&pilihan)
 
-	fmt.Println("---MENU---")
-	fmt.Println("1. Input data tim: ")
-	fmt.Println("2. input data pemain")
-	fmt.Println("3. input data pertandingan")
-	fmt.Println("4. keluar ")
-	fmt.Scan(&a)
-
-	switch a {
+	switch pilihan {
 	case 1:
-		teams := &TeamList{teams: make([]tim, MaxTeams)}
-		if err := inputTim(teams); err != nil {
-			fmt.Println("Error:", err)
-		}
+		daftarTim := &DaftarTim{Tim: make([]Tim, MaksimalTim)}
+		InputTim(daftarTim)
 	case 2:
-		var players pm
-		var playerCount int
-		var teamName string
-		inputpemain(&players, &playerCount, &teamName)
+		daftarPemain := &DaftarPemain{Pemain: make([]Pemain, MaksimalPemain)}
+		InputPemain(daftarPemain, daftarTim)
 	case 3:
-		var matches pt
-		var matchCount int
-		inputpertandingan(&matches, &matchCount)
+		daftarPertandingan := &DaftarPertandingan{Pertandingan: make([]Pertandingan, MaksimalPertandingan)}
+		InputPertandingan(daftarPertandingan, daftarTim)
+	case 4:
+		return
+	case 5:
+		MenuAdmin()
 	}
-}
-func hapusdata() {
-	var a int
-
-	fmt.Println("---MENU---")
-	fmt.Println("1. Hapus data tim ")
-	fmt.Println("2. hapus data pemain")
-	fmt.Println("4. keluar ")
-	fmt.Scan(&a)
-
-	switch a {
-	case 1:
-		var teams tm
-		hapustim(&teams, &totaltim)
-	case 2:
-		var players pm
-		var playerCount int
-		hapuspemain(&players, &playerCount)
-	}
+	fmt.Println("Pilihan tidak valid")
+	InputData()
 }
 
-type TeamList struct {
-	teams []tim
-}
+func InputTim(daftarTim *DaftarTim) {
+	var jumlah int
+	fmt.Print("Masukkan jumlah tim: ")
+	fmt.Scan(&jumlah)
 
-func inputTim(teams *TeamList) error {
-	var count int
-	fmt.Print("masukkan jumlah tim : ")
-	if _, err := fmt.Scan(&count); err != nil {
-		return fmt.Errorf("invalid input: %v", err)
-	}
-	if count <= 0 || count > MaxTeams {
-		return fmt.Errorf("jumlah tim harus antara 1 dan %d", MaxTeams)
+	if jumlah <= 0 || jumlah > MaksimalTim {
+		fmt.Printf("Jumlah tim harus antara 1 dan %d\n", MaksimalTim)
+		return
 	}
 
-	for i := 0; i < count; i++ {
-		var v string
-		fmt.Print("masukkan nama tim : ")
-		fmt.Scan(&teams.teams[i].nama)
-		fmt.Print(" riwayat pertandingan tim : ")
-		fmt.Scan(&v)
-		if v == "ya" {
-			fmt.Print("masukkan jumlah pertandingan : ")
-			fmt.Scan(&teams.teams[i].jumlahpertandingan)
-			fmt.Print("masukkan jumlah menang : ")
-			fmt.Scan(&teams.teams[i].jumlahmenang)
-			fmt.Print("masukkan jumlah seri : ")
-			fmt.Scan(&teams.teams[i].jumlahseri)
-			fmt.Print("masukkan jumlah kalah : ")
-			fmt.Scan(&teams.teams[i].jumlahkalah)
-		} else {
-			teams.teams[i].jumlahpertandingan = 0
-			teams.teams[i].jumlahmenang = 0
-			teams.teams[i].jumlahseri = 0
-			teams.teams[i].jumlahkalah = 0
-		}
-	}
-	totaltim = totaltim + count
-	return nil
-}
-
-func inputpemain(a *pm, b *int, c *string) {
-	var e string
-	fmt.Print("masukkan nama tim : ")
-	fmt.Scan(&c)
-	fmt.Print("masukkan jumlah pemain : ")
-	fmt.Scan(&b)
-	for i := 0; i < *b; i++ {
-		fmt.Print("masukkan nama pemain : ")
-		fmt.Scan(&a[i].nama)
-		fmt.Print("masukkan posisi pemain : ")
-		fmt.Scan(&a[i].posisi)
-		fmt.Print("riwayat pertandingan pemain : ")
-		fmt.Scan(&e)
-		if e == "ya" {
-			fmt.Print("masukkan jumlah pertandingan : ")
-			fmt.Scan(&a[i].jumlahpertandingan)
-			fmt.Print("masukkan jumlah menang : ")
-			fmt.Scan(&a[i].jumlahmenang)
-			fmt.Print("masukkan jumlah seri : ")
-			fmt.Scan(&a[i].jumlahseri)
-			fmt.Print("masukkan jumlah kalah : ")
-			fmt.Scan(&a[i].jumlahkalah)
-		} else {
-			a[i].jumlahpertandingan = 0
-			a[i].jumlahmenang = 0
-			a[i].jumlahseri = 0
-			a[i].jumlahkalah = 0
-		}
-		a[i].namatim = *c
-	}
-}
-
-func hapustim(a *tm, b *int) {
-	var c string
-	fmt.Print("masukkan nama tim yang ingin dihapus : ")
-	fmt.Scan(&c)
-	for i := 0; i < *b; i++ {
-		if a[i].nama == c {
-			a[i] = tim{}
-			fmt.Println("data tim berhasil dihapus")
-		} else {
-			fmt.Println("data tim tidak ditemukan")
-		}
-	}
-}
-
-func hapuspemain(a *pm, b *int) {
-	var c string
-	fmt.Print("masukkan nama pemain yang ingin dihapus : ")
-	fmt.Scan(&c)
-	for i := 0; i < *b; i++ {
-		if a[i].nama == c {
-			a[i] = pemain{}
-			fmt.Println("data pemain berhasil dihapus")
-		} else {
-			fmt.Println("data pemain tidak ditemukan")
-		}
-	}
-}
-
-func inputpertandingan(a *pt, b *int) {
-	var d int
-	fmt.Print("masukkan jumlah pertandingan : ")
-	fmt.Scan(&b)
-	d = 1
 	i := 0
-	for i < *b {
-		var konflict bool
-		fmt.Print("masukkan pertandingan ke-", d, " : ")
-		fmt.Print("masukkan nama tim 1 : ")
-		fmt.Scan(&a[i].tim1)
-		fmt.Print("masukkan nama tim 2 : ")
-		fmt.Scan(&a[i].tim2)
+	for i < jumlah {
+		fmt.Printf("\nData Tim ke-%d:\n", i+1)
+		var tim Tim
+		var inputValid bool
+		inputValid = true
 
-		fmt.Print("masukkan hari (senin/selasa/rabu/kamis/jumat/sabtu/minggu): ")
-		fmt.Scan(&a[i].hari)
+		fmt.Print("Masukkan nama tim: ")
+		fmt.Scan(&tim.Nama)
 
-		fmt.Print("masukkan jam (format 24 jam, 0-23): ")
-		fmt.Scan(&a[i].jam)
+		// Cek duplikasi nama tim
+		for j := 0; j < i; j++ {
+			if daftarTim.Tim[j].Nama == tim.Nama {
+				fmt.Printf("Tim dengan nama %s sudah ada\n", tim.Nama)
+				inputValid = false
+			}
+		}
 
-		if i > 0 {
-			for j := 0; j < i && !konflict; j++ {
-				if (a[i].hari == a[j].hari && a[i].jam == a[j].jam) &&
-					(a[i].tim1 == a[j].tim1 || a[i].tim1 == a[j].tim2 ||
-						a[i].tim2 == a[j].tim1 || a[i].tim2 == a[j].tim2) {
-					fmt.Println("PERINGATAN: Jadwal bertabrakan!")
-					fmt.Println("Tim yang bertanding sudah ada di jadwal yang sama")
-					konflict = true
+		if inputValid {
+			var adaRiwayat string
+			fmt.Print("Ada riwayat pertandingan? (ya/tidak): ")
+			fmt.Scan(&adaRiwayat)
+
+			if adaRiwayat == "ya" || adaRiwayat == "Ya" {
+				fmt.Print("Masukkan jumlah pertandingan: ")
+				fmt.Scan(&tim.JumlahPertandingan)
+
+				if tim.JumlahPertandingan > 0 {
+					fmt.Print("Masukkan jumlah menang: ")
+					fmt.Scan(&tim.JumlahMenang)
+					fmt.Print("Masukkan jumlah seri: ")
+					fmt.Scan(&tim.JumlahSeri)
+					fmt.Print("Masukkan jumlah kalah: ")
+					fmt.Scan(&tim.JumlahKalah)
+
+					totalPertandingan := tim.JumlahMenang + tim.JumlahSeri + tim.JumlahKalah
+					if totalPertandingan == tim.JumlahPertandingan {
+						tim.RasioMenang = float32(tim.JumlahMenang) / float32(tim.JumlahPertandingan) * 100
+						daftarTim.Tim[i] = tim
+						i++
+					} else {
+						fmt.Println("Total pertandingan tidak sesuai dengan jumlah menang, seri, dan kalah")
+						inputValid = false
+					}
+				} else {
+					fmt.Println("Jumlah pertandingan harus lebih dari 0")
+					inputValid = false
 				}
+			} else {
+				daftarTim.Tim[i] = tim
+				i++
+			}
+		}
+	}
+}
+
+func InputPemain(daftarPemain *DaftarPemain, daftarTim *DaftarTim) {
+	var jumlah int
+	fmt.Print("Masukkan jumlah pemain: ")
+	fmt.Scan(&jumlah)
+
+	if jumlah <= 0 || jumlah > MaksimalPemain {
+		fmt.Printf("Jumlah pemain harus antara 1 dan %d\n", MaksimalPemain)
+		return
+	}
+
+	i := 0
+	for i < jumlah {
+		fmt.Printf("\nData Pemain ke-%d:\n", i+1)
+		var pemain Pemain
+		var inputValid bool
+		inputValid = true
+
+		fmt.Print("Masukkan nama pemain: ")
+		fmt.Scan(&pemain.Nama)
+		fmt.Print("Masukkan nama tim: ")
+		fmt.Scan(&pemain.NamaTim)
+
+		timDitemukan := false
+		for j := 0; j < daftarTim.Jumlah; j++ {
+			if daftarTim.Tim[j].Nama == pemain.NamaTim {
+				timDitemukan = true
 			}
 		}
 
-		if konflict != true {
+		if !timDitemukan {
+			fmt.Printf("Tim %s tidak ditemukan\n", pemain.NamaTim)
+			inputValid = false
+		}
+
+		if inputValid {
+			fmt.Print("Masukkan posisi pemain: ")
+			fmt.Scan(&pemain.Posisi)
+
+			pemain.JumlahPertandingan = 0
+			pemain.JumlahMenang = 0
+			pemain.JumlahSeri = 0
+			pemain.JumlahKalah = 0
+
+			daftarPemain.Pemain[i] = pemain
+			daftarPemain.Jumlah++
 			i++
-			d++
 		}
 	}
 }
 
-func menuuser() error {
-	var a int
-	fmt.Println("---MENU---")
-	fmt.Println("1. Tampilkan data tim ")
-	fmt.Println("2. tampilkan data pemain")
-	fmt.Println("3. tampilkan data pertandingan")
-	fmt.Println("4. keluar ")
-	fmt.Scan(&a)
+func InputPertandingan(daftarPertandingan *DaftarPertandingan, daftarTim *DaftarTim) {
+	var jumlah int
+	fmt.Print("Masukkan jumlah pertandingan: ")
+	fmt.Scan(&jumlah)
 
-	switch a {
+	if jumlah <= 0 || jumlah > MaksimalPertandingan {
+		fmt.Printf("Jumlah pertandingan harus antara 1 dan %d\n", MaksimalPertandingan)
+		return
+	}
+
+	i := 0
+	for i < jumlah {
+		fmt.Printf("\nData Pertandingan ke-%d:\n", i+1)
+		var pertandingan Pertandingan
+		var inputValid bool
+		inputValid = true
+
+		fmt.Print("Masukkan nama tim 1: ")
+		fmt.Scan(&pertandingan.Tim1)
+		fmt.Print("Masukkan nama tim 2: ")
+		fmt.Scan(&pertandingan.Tim2)
+
+		if pertandingan.Tim1 == pertandingan.Tim2 {
+			fmt.Println("Tim tidak boleh sama")
+			inputValid = false
+		}
+
+		if inputValid {
+			fmt.Print("Masukkan hari (senin-minggu): ")
+			fmt.Scan(&pertandingan.Hari)
+			fmt.Print("Masukkan jam (0-23): ")
+			fmt.Scan(&pertandingan.Jam)
+
+			if pertandingan.Jam < 0 || pertandingan.Jam > 23 {
+				fmt.Println("Jam tidak valid")
+				inputValid = false
+			}
+
+			if inputValid {
+				daftarPertandingan.Pertandingan[i] = pertandingan
+				daftarPertandingan.Jumlah++
+				i++
+			}
+		}
+	}
+}
+
+func TampilkanData(daftarTim *DaftarTim, daftarPemain *DaftarPemain, daftarPertandingan *DaftarPertandingan) {
+	fmt.Println("\n=== DATA TIM ===")
+	for i := 0; i < daftarTim.Jumlah; i++ {
+		fmt.Printf("\nTim: %s\n", daftarTim.Tim[i].Nama)
+		fmt.Printf("Jumlah Pertandingan: %d\n", daftarTim.Tim[i].JumlahPertandingan)
+		fmt.Printf("Statistik: Menang:%d Seri:%d Kalah:%d\n",
+			daftarTim.Tim[i].JumlahMenang,
+			daftarTim.Tim[i].JumlahSeri,
+			daftarTim.Tim[i].JumlahKalah)
+		fmt.Printf("Rasio Kemenangan: %.2f%%\n", daftarTim.Tim[i].RasioMenang)
+	}
+
+	fmt.Println("\n=== DATA PEMAIN ===")
+	for i := 0; i < daftarPemain.Jumlah; i++ {
+		fmt.Printf("\nNama: %s\n", daftarPemain.Pemain[i].Nama)
+		fmt.Printf("Tim: %s\n", daftarPemain.Pemain[i].NamaTim)
+		fmt.Printf("Posisi: %s\n", daftarPemain.Pemain[i].Posisi)
+	}
+
+	fmt.Println("\n=== JADWAL PERTANDINGAN ===")
+	for i := 0; i < daftarPertandingan.Jumlah; i++ {
+		fmt.Printf("\n%s vs %s\n",
+			daftarPertandingan.Pertandingan[i].Tim1,
+			daftarPertandingan.Pertandingan[i].Tim2)
+		fmt.Printf("Jadwal: %s jam %d:00\n",
+			daftarPertandingan.Pertandingan[i].Hari,
+			daftarPertandingan.Pertandingan[i].Jam)
+	}
+}
+
+func HapusData(daftarTim *DaftarTim, daftarPemain *DaftarPemain, daftarPertandingan *DaftarPertandingan) {
+	var pilihan int
+	fmt.Println("1. Hapus Tim")
+	fmt.Println("2. Hapus Pemain")
+	fmt.Println("3. Hapus Pertandingan")
+	fmt.Scan(&pilihan)
+
+	switch pilihan {
 	case 1:
-		var teams tm
-		tampiltim(&teams, &totaltim)
+		var nama string
+		fmt.Print("Masukkan nama tim yang akan dihapus: ")
+		fmt.Scan(&nama)
+
+		for i := 0; i < daftarTim.Jumlah; i++ {
+			if daftarTim.Tim[i].Nama == nama {
+				for j := i; j < daftarTim.Jumlah-1; j++ {
+					daftarTim.Tim[j] = daftarTim.Tim[j+1]
+				}
+				daftarTim.Jumlah--
+				fmt.Println("Tim berhasil dihapus")
+				return
+			}
+		}
+		fmt.Println("Tim tidak ditemukan")
+
 	case 2:
-		var players pm
-		var playerCount int
-		tampilpemain(&players, &playerCount)
+		var nama string
+		fmt.Print("Masukkan nama pemain yang akan dihapus: ")
+		fmt.Scan(&nama)
+
+		for i := 0; i < daftarPemain.Jumlah; i++ {
+			if daftarPemain.Pemain[i].Nama == nama {
+				for j := i; j < daftarPemain.Jumlah-1; j++ {
+					daftarPemain.Pemain[j] = daftarPemain.Pemain[j+1]
+				}
+				daftarPemain.Jumlah--
+				fmt.Println("Pemain berhasil dihapus")
+				return
+			}
+		}
+		fmt.Println("Pemain tidak ditemukan")
+
 	case 3:
-		var matches pt
-		var matchCount int
-		tampilpertandingan(&matches, &matchCount)
-	}
-	return nil
-}
+		var tim1, tim2 string
+		fmt.Print("Masukkan nama tim 1: ")
+		fmt.Scan(&tim1)
+		fmt.Print("Masukkan nama tim 2: ")
+		fmt.Scan(&tim2)
 
-func tampiltim(a *tm, b *int) {
-	fmt.Println("DATA DAN STATISTIK TIM:")
-	fmt.Println("----------------------------------------")
-	for i := 0; i < *b; i++ {
-		if a[i].nama != "" {
-			fmt.Printf("Nama Tim: %s\n", a[i].nama)
-			fmt.Printf("Jumlah Pertandingan: %d\n", a[i].jumlahpertandingan)
-			fmt.Printf("Menang: %d | Seri: %d | Kalah: %d\n",
-				a[i].jumlahmenang, a[i].jumlahseri, a[i].jumlahkalah)
-			if a[i].jumlahpertandingan > 0 {
-				winRate := float32(a[i].jumlahmenang) / float32(a[i].jumlahpertandingan) * 100
-				fmt.Printf("Win Rate: %.1f%%\n", winRate)
+		for i := 0; i < daftarPertandingan.Jumlah; i++ {
+			if (daftarPertandingan.Pertandingan[i].Tim1 == tim1 &&
+				daftarPertandingan.Pertandingan[i].Tim2 == tim2) {
+				for j := i; j < daftarPertandingan.Jumlah-1; j++ {
+					daftarPertandingan.Pertandingan[j] = daftarPertandingan.Pertandingan[j+1]
+				}
+				daftarPertandingan.Jumlah--
+				fmt.Println("Pertandingan berhasil dihapus")
+				return
 			}
-			fmt.Println("----------------------------------------")
 		}
+		fmt.Println("Pertandingan tidak ditemukan")
 	}
 }
 
-func tampilpemain(a *pm, b *int) {
-	fmt.Println("DATA DAN STATISTIK PEMAIN:")
-	fmt.Println("----------------------------------------")
-	for i := 0; i < *b; i++ {
-		if a[i].nama != "" {
-			fmt.Printf("Nama Pemain: %s\n", a[i].nama)
-			fmt.Printf("Tim: %s\n", a[i].namatim)
-			fmt.Printf("Posisi: %s\n", a[i].posisi)
-			fmt.Printf("Jumlah Pertandingan: %d\n", a[i].jumlahpertandingan)
-			fmt.Printf("Menang: %d | Seri: %d | Kalah: %d\n",
-				a[i].jumlahmenang, a[i].jumlahseri, a[i].jumlahkalah)
-			if a[i].jumlahpertandingan > 0 {
-				winRate := float32(a[i].jumlahmenang) / float32(a[i].jumlahpertandingan) * 100
-				fmt.Printf("Win Rate: %.1f%%\n", winRate)
-			}
-			fmt.Println("----------------------------------------")
-		}
-	}
-}
-
-func tampilpertandingan(a *pt, b *int) {
-	fmt.Println("DATA PERTANDINGAN:")
-	fmt.Println("----------------------------------------")
-	for i := 0; i < *b; i++ {
-		fmt.Printf("Pertandingan %d:\n", i+1)
-		fmt.Printf("Tim: %s vs %s\n", a[i].tim1, a[i].tim2)
-		fmt.Printf("Jadwal: Hari %s, Jam %d:00\n", a[i].hari, a[i].jam)
-		fmt.Println("----------------------------------------")
-	}
-}
-
-func main() {
-	for {
-		if err := menu(); err != nil {
-			fmt.Println("Error:", err)
-		}
-	}
+func MenuPengguna() {
+	// Implementasi menu untuk pengguna biasa
 }
