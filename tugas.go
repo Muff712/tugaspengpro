@@ -14,33 +14,26 @@ type Tim struct {
 	RasioMenang                                                                         float32
 }
 
-type DaftarTim struct {
-	Tim []Tim
-}
+type TabTim [MaksimalTim - 1]Tim
+
 
 type Pemain struct {
 	Nama               string
-	NamaTim            string
 	Posisi             string
 }
 
-type DaftarPemain struct {
-	Pemain []Pemain
-	Jumlah int
-}
+type TabPemain [MaksimalPemain - 1]Pemain
+
 
 type Pertandingan struct {
 	Tim1, Tim2  string
 	Hari        string
-	Jam         int
 	HasilTim1   int
 	HasilTim2   int
 }
 
-type DaftarPertandingan struct {
-	Pertandingan []Pertandingan
-	Jumlah       int
-}
+type TabPertandingan [MaksimalPertandingan - 1]Pertandingan
+
 
 func Menu() {
 	var pilihan string
@@ -94,142 +87,49 @@ func InputData() {
 	fmt.Println("1. Input Data Tim")
 	fmt.Println("2. Input Data Pemain")
 	fmt.Println("3. Input Data Pertandingan")
-	fmt.Println("4. Keluar")
-	fmt.Println("5. Kembali ke Menu Admin")
+	fmt.Println("4. Kembali ke Menu Admin")
 	fmt.Scan(&pilihan)
 
 	switch pilihan {
 	case 1:
-		daftarTim := &DaftarTim{Tim: make([]Tim, MaksimalTim)}
 		InputTim(daftarTim)
 	case 2:
-		daftarPemain := &DaftarPemain{Pemain: make([]Pemain, MaksimalPemain)}
 		InputPemain(daftarPemain, daftarTim)
 	case 3:
-		daftarPertandingan := &DaftarPertandingan{Pertandingan: make([]Pertandingan, MaksimalPertandingan)}
 		InputPertandingan(daftarPertandingan, daftarTim)
 	case 4:
-		return
-	case 5:
 		MenuAdmin()
 	}
 	fmt.Println("Pilihan tidak valid")
 	InputData()
 }
 
-func InputTim(daftarTim *DaftarTim) {
-	var jumlah int
+func InputTim(a *TabTim, n int) {
 	fmt.Print("Masukkan jumlah tim: ")
-	fmt.Scan(&jumlah)
+	fmt.Scan(&n)
 
-	if jumlah <= 0 || jumlah > MaksimalTim {
+	if n <= 0 || n > MaksimalTim {
 		fmt.Printf("Jumlah tim harus antara 1 dan %d\n", MaksimalTim)
 		return
 	}
 
-	i := 0
-	for i < jumlah {
-		fmt.Printf("\nData Tim ke-%d:\n", i+1)
-		var tim Tim
-		var inputValid bool
-		inputValid = true
-
-		fmt.Print("Masukkan nama tim: ")
-		fmt.Scan(&tim.Nama)
-
-		// Cek duplikasi nama tim
-		for j := 0; j < i; j++ {
-			if daftarTim.Tim[j].Nama == tim.Nama {
-				fmt.Printf("Tim dengan nama %s sudah ada\n", tim.Nama)
-				inputValid = false
-			}
-		}
-
-		if inputValid {
-			var adaRiwayat string
-			fmt.Print("Ada riwayat pertandingan? (ya/tidak): ")
-			fmt.Scan(&adaRiwayat)
-
-			if adaRiwayat == "ya" || adaRiwayat == "Ya" {
-				fmt.Print("Masukkan jumlah pertandingan: ")
-				fmt.Scan(&tim.JumlahPertandingan)
-
-				if tim.JumlahPertandingan > 0 {
-					fmt.Print("Masukkan jumlah menang: ")
-					fmt.Scan(&tim.JumlahMenang)
-					fmt.Print("Masukkan jumlah seri: ")
-					fmt.Scan(&tim.JumlahSeri)
-					fmt.Print("Masukkan jumlah kalah: ")
-					fmt.Scan(&tim.JumlahKalah)
-
-					totalPertandingan := tim.JumlahMenang + tim.JumlahSeri + tim.JumlahKalah
-					if totalPertandingan == tim.JumlahPertandingan {
-						tim.RasioMenang = float32(tim.JumlahMenang) / float32(tim.JumlahPertandingan) * 100
-						daftarTim.Tim[i] = tim
-						i++
-					} else {
-						fmt.Println("Total pertandingan tidak sesuai dengan jumlah menang, seri, dan kalah")
-						inputValid = false
-					}
-				} else {
-					fmt.Println("Jumlah pertandingan harus lebih dari 0")
-					inputValid = false
-				}
-			} else {
-				daftarTim.Tim[i] = tim
-				i++
-			}
+	for i := 0; i < n; i++ {
+		fmt.Printf("\nData Tim ke-%d:\n")
+		fmt.Println("Masukkan nama tim: ")
+		fmt.Scan(&a[i].Nama)
+		fmt.Print("Masukkan jumlah anggota: ")
+		fmt.Scan(&a[i].JumlahAnggota)
+		InputPemain(&b, a[i].JumlahAnggota)
 		}
 	}
-}
 
-func InputPemain(daftarPemain *DaftarPemain, daftarTim *DaftarTim) {
-	var jumlah int
-	fmt.Print("Masukkan jumlah pemain: ")
-	fmt.Scan(&jumlah)
-
-	if jumlah <= 0 || jumlah > MaksimalPemain {
-		fmt.Printf("Jumlah pemain harus antara 1 dan %d\n", MaksimalPemain)
-		return
-	}
-
-	i := 0
-	for i < jumlah {
+func InputPemain(a *TabPemain, n int) {
+	for i := 0;i < n; i++ {
 		fmt.Printf("\nData Pemain ke-%d:\n", i+1)
-		var pemain Pemain
-		var inputValid bool
-		inputValid = true
-
-		fmt.Print("Masukkan nama pemain: ")
-		fmt.Scan(&pemain.Nama)
-		fmt.Print("Masukkan nama tim: ")
-		fmt.Scan(&pemain.NamaTim)
-
-		timDitemukan := false
-		for j := 0; j < daftarTim.Jumlah; j++ {
-			if daftarTim.Tim[j].Nama == pemain.NamaTim {
-				timDitemukan = true
-			}
-		}
-
-		if !timDitemukan {
-			fmt.Printf("Tim %s tidak ditemukan\n", pemain.NamaTim)
-			inputValid = false
-		}
-
-		if inputValid {
-			fmt.Print("Masukkan posisi pemain: ")
-			fmt.Scan(&pemain.Posisi)
-
-			pemain.JumlahPertandingan = 0
-			pemain.JumlahMenang = 0
-			pemain.JumlahSeri = 0
-			pemain.JumlahKalah = 0
-
-			daftarPemain.Pemain[i] = pemain
-			daftarPemain.Jumlah++
-			i++
-		}
+		fmt.Println("Masukkan nama pemain: ")
+		fmt.Scan(&a[i].Nama)
+		fmt.Print("Masukkan posisi: ")
+		fmt.Scan(&a[i].Posisi)
 	}
 }
 
@@ -280,7 +180,7 @@ func InputPertandingan(daftarPertandingan *DaftarPertandingan, daftarTim *Daftar
 	}
 }
 
-func TampilkanData(daftarTim *DaftarTim, daftarPemain *DaftarPemain, daftarPertandingan *DaftarPertandingan) {
+func TampilkanData(daftarTim *TabTim, daftarPemain *TabPemain, daftarPertandingan *TabPertandingan) {
 	fmt.Println("\n=== DATA TIM ===")
 	for i := 0; i < daftarTim.Jumlah; i++ {
 		fmt.Printf("\nTim: %s\n", daftarTim.Tim[i].Nama)
