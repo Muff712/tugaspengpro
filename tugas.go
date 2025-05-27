@@ -5,7 +5,7 @@ import "fmt"
 
 type Tim struct {
 	Nama                                                                                string
-	JumlahPertandingan, Peringkat, JumlahMenang, JumlahSeri, JumlahKalah, JumlahAnggota int
+	JumlahPertandingan, Peringkat, JumlahMenang,  JumlahKalah int
 	RasioMenang                                                                         float32
 }
 
@@ -23,13 +23,12 @@ type TabPemain [10 - 1]Pemain
 type Pertandingan struct {
 	Tim1, Tim2  string
 	Hari        string
-	HasilTim1   int
-	HasilTim2   int
+	HasilTim1   string
+	HasilTim2   string
 }
 
 type TabPertandingan [9 - 1]Pertandingan
 
-type Minggu [15 - 1]int
 
 
 func Menu() {
@@ -93,7 +92,7 @@ func InputData() {
 	case 2:
 		InputPertandingan()
 	case 3:
-		InputSkor()
+		InputHasil()
 	case 4:
 		MenuAdmin()
 	}
@@ -108,14 +107,12 @@ func InputTim(a *TabTim) {
 		fmt.Printf("\nData Tim ke-%d:\n")
 		fmt.Println("Masukkan nama tim: ")
 		fmt.Scan(&a[i].Nama)
-		fmt.Print("Masukkan jumlah anggota: ")
-		fmt.Scan(&a[i].JumlahAnggota)
-		InputPemain(&b, a[i].JumlahAnggota)
+		InputPemain(&b)
 		}
 	}
 
-func InputPemain(a *TabPemain, n int) {
-	for i := 0;i < n; i++ {
+func InputPemain(a *TabPemain) {
+	for i := 0;i < 9; i++ {
 		fmt.Printf("\nData Pemain ke-%d:\n", i+1)
 		fmt.Println("Masukkan nama pemain: ")
 		fmt.Scan(&a[i].Nama)
@@ -125,23 +122,42 @@ func InputPemain(a *TabPemain, n int) {
 }
 
 func InputPertandingan(a *TabPertandingan) {
-	var d, e TabTim
-	fmt.Println("=== INPUT JADWAL PERTANDINGAN ===")
-	for i := 0; i < 8; i++ {
-		fmt.Printf("\nData Pertandingan ke-%d:\n", i+1)
-		fmt.Print("Masukkan nama tim 1: ")
-		fmt.Scan(&a[i].Tim1)	
-		fmt.Print("Masukkan nama tim 2: ")
-		fmt.Scan(&a[i].Tim2)
-		b := Validtim(d, &a[i].Tim1)
-		c := Validtim(e, &a[i].Tim2)
-		if !b && !c {
-			fmt.Println("Tim tidak valid, silakan masukkan nama tim yang benar.")
-			i-- 
-		}
-		fmt.Print("Masukkan hari pertandingan: ")
-		fmt.Scan(&a[i].Hari)
-	}
+    var d, e TabTim
+    fmt.Println("=== INPUT JADWAL PERTANDINGAN ===")
+    for i := 0; i < 8; i++ {
+        fmt.Printf("\nData Pertandingan ke-%d:\n", i+1)
+        fmt.Print("Masukkan nama tim 1: ")
+        fmt.Scan(&a[i].Tim1)	
+        fmt.Print("Masukkan nama tim 2: ")
+        fmt.Scan(&a[i].Tim2)
+        b := Validtim(d, &a[i].Tim1)
+        c := Validtim(e, &a[i].Tim2)
+        if !b && !c {
+            fmt.Println("Tim tidak valid, silakan masukkan nama tim yang benar.")
+            i-- 
+        }
+        fmt.Print("Masukkan hari pertandingan: ")
+        fmt.Scan(&a[i].Hari)
+    }
+
+    n := 8
+    i := 0
+    for i < n {
+        x := i + 1
+        for x < n {
+            samaTim := (a[i].Tim1 == a[x].Tim1 && a[i].Tim2 == a[x].Tim2) ||
+                       (a[i].Tim1 == a[x].Tim2 && a[i].Tim2 == a[x].Tim1)
+            if samaTim && a[i].Hari == a[x].Hari {
+                for y := x; y < n-1; y++ {
+                    a[y] = a[y+1]
+                }
+                n--
+            } else {
+                x++
+            }
+        }
+        i++
+    }
 }
 
 func Validtim(a TabTim, nama *string) bool {
@@ -152,19 +168,6 @@ b := false
 		}
 	}
 	return (b)
-}
-
-func InputSkor(a *TabPertandingan) {
-	fmt.Println("=== INPUT SKOR PERTANDINGAN ===")
-	for i := 0; i < 8; i++ {
-		fmt.Printf("\nData Pertandingan ke-%d:\n", i+1)
-		fmt.Printf("Tim 1: %s\n", a[i].Tim1)
-		fmt.Printf("Tim 2: %s\n", a[i].Tim2)
-		fmt.Print("Masukkan skor tim 1: ")
-		fmt.Scan(&a[i].HasilTim1)
-		fmt.Print("Masukkan skor tim 2: ")
-		fmt.Scan(&a[i].HasilTim2)
-	}
 }
 
 func CariIdxTim(a *TabTim, n int, nama string) int {
@@ -193,8 +196,100 @@ func HapusData(a *TabTim, b *[7]TabPemain, n *int) {
         b[i] = b[i+1]
     }
     *n--
-    fmt.Println("Tim dan data pemain berhasil dihapus.")
+    fmt.Println("Data berhasil dihapus.")
 }
+
+func InputHasil(a TabPertandingan){
+	var b ,c string
+	var d TabTim
+	fmt.Println("=== INPUT HASIL PERTANDINGAN ===")
+	for i := 0; i < 8; i++ {
+		fmt.Printf("Masukkan hasil pertandingan %d:\n", i+1)
+		fmt.Printf("Tim 1 (%s): ", a[i].Tim1)
+		fmt.Scan(&b)
+		fmt.Printf("Tim 2 (%s): ", a[i].Tim2)
+		fmt.Scan(&c)
+		a[i].HasilTim1 = b
+		a[i].HasilTim2 = c
+	}
+	for i := 0; i < 8; i++ {
+		if a[i].Tim1 == d[i].Nama {
+			d[i].JumlahPertandingan++
+			if b == "Menang" || b == "menang" {
+				d[i].JumlahMenang++
+			} else if b == "Kalah" || b == "kalah" {
+				d[i].JumlahKalah++
+			}
+			d[i].RasioMenang = float32(d[i].JumlahMenang) / float32(d[i].JumlahPertandingan)
+		}
+	}
+	for i := 0; i < 8; i++ {
+		if a[i].Tim2 == d[i].Nama {
+			d[i].JumlahPertandingan++
+			if c == "Menang" || c == "menang" {
+				d[i].JumlahMenang++
+			} else if c == "Kalah" || c == "kalah" {
+				d[i].JumlahKalah++
+			}
+			d[i].RasioMenang = float32(d[i].JumlahMenang) / float32(d[i].JumlahPertandingan)
+		}
+	}
+
+}
+
+
+func tampilData() {
+	var pilihan int
+	fmt.Println("---MENU INPUT---")
+	fmt.Println("1. Tampil Data Tim")
+	fmt.Println("2. Tampil jadwal")
+	fmt.Println("3. Tampil skor pertandingan")
+	fmt.Println("4. Kembali ke Menu Admin")
+	fmt.Scan(&pilihan)
+
+	switch pilihan {
+	case 1:
+		TampilTim()
+	case 2:
+		TampilPertandingan()
+	case 3:
+		TampilHasil()
+	case 4:
+		MenuAdmin()
+	}
+	fmt.Println("Pilihan tidak valid")
+	InputData()
+}
+
+func TampilTim(a TabTim, b [10]TabPemain) {
+    fmt.Println("=== DATA TIM ===")
+    for i := 0; i < 9; i++ {
+        fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5d | %-8.2f\n", i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].Peringkat, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
+        fmt.Println("   Daftar Pemain:")
+        for j := 0; j < 9; j++ {
+            fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
+        }
+    }
+}
+
+func TampilPertandingan(a TabPertandingan) {
+	fmt.Println("=== JADWAL PERTANDINGAN ===")
+	for i := 0; i < 8; i++ {
+		fmt.Printf("Pertandingan %d: %s vs %s, Hari: %s\n", i+1, a[i].Tim1, a[i].Tim2, a[i].Hari)
+	}
+}
+
+func TampilHasil(a TabPertandingan) {
+	fmt.Println("=== HASIL PERTANDINGAN ===")
+	for i := 0; i < 8; i++ {
+		fmt.Printf("Pertandingan %d: %s (%s) vs %s (%s)\n", i+1,
+			a[i].Tim1, a[i].HasilTim1,
+			a[i].Tim2, a[i].HasilTim2)
+	}
+}
+
+
+
 
 
 
