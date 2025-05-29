@@ -117,6 +117,9 @@ func InputTim(a *TabTim) {
 		fmt.Scan(&a[i].Nama)
 		InputPemain(&b)
 	}
+
+	MenuAdmin()
+
 }
 
 func InputPemain(a *TabPemain) {
@@ -144,6 +147,7 @@ func InputPertandingan(a *TabPertandingan) {
 		fmt.Print("Masukkan hari pertandingan: ")
 		fmt.Scan(&a[i].Hari)
 	}
+	MenuAdmin()
 }
 
 func Validtim(a TabTim, nama *string) bool {
@@ -182,6 +186,7 @@ func HapusData(a *TabTim, b *[7]TabPemain, n *int) {
 	}
 	*n = *n - 1
 	fmt.Println("Data berhasil dihapus.")
+	MenuAdmin()
 }
 
 func InputHasil(a TabPertandingan) {
@@ -196,6 +201,7 @@ func InputHasil(a TabPertandingan) {
 		a[i].HasilTim1 = b
 		a[i].HasilTim2 = c
 	}
+	MenuAdmin()
 }
 
 func tampilData() {
@@ -235,6 +241,7 @@ func TampilTim(a TabTim, b [7]TabPemain) {
 			fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
 		}
 	}
+	tampilData()
 }
 
 func TampilPertandingan(a TabPertandingan) {
@@ -242,6 +249,7 @@ func TampilPertandingan(a TabPertandingan) {
 	for i := 0; i < 9; i++ {
 		fmt.Printf("Pertandingan %d: %s vs %s, Hari: %s\n", i+1, a[i].Tim1, a[i].Tim2, a[i].Hari)
 	}
+	tampilData()
 }
 
 func TampilHasil(a TabPertandingan) {
@@ -249,6 +257,7 @@ func TampilHasil(a TabPertandingan) {
 	for i := 0; i < 9; i++ {
 		fmt.Printf("Pertandingan %d: %s (%s) vs %s (%s)\n", i+1, a[i].Tim1, a[i].HasilTim1, a[i].Tim2, a[i].HasilTim2)
 	}
+	tampilData()
 }
 
 func Peringkat(a *TabTim) {
@@ -263,10 +272,14 @@ func Peringkat(a *TabTim) {
 	for i := 0; i < 7; i++ {
 		fmt.Printf("%d. %s - Rasio Menang: %.2f\n", i+1, a[i].Nama, a[i].RasioMenang)
 	}
+	tampilData()
 }
 
 func MenuPengguna() {
 	var pilihan int
+	var pemain [7]TabPemain
+	var tim TabTim
+
 	fmt.Println("---MENU PENGGUNA---")
 	fmt.Println("1. Tampilkan Data Tim")
 	fmt.Println("2. Tampilkan Jadwal Pertandingan")
@@ -275,14 +288,13 @@ func MenuPengguna() {
 	fmt.Println("5. Kembali ke Menu Utama")
 	fmt.Scan(&pilihan)
 
-	var tim TabTim
 	switch pilihan {
 	case 1:
-		tampilData()
+		tampilTim2(tim, pemain)
 	case 2:
-		TampilPertandingan(TabPertandingan{})
+		TampilPertandingan2(TabPertandingan{})
 	case 3:
-		TampilHasil(TabPertandingan{})
+		TampilHasil2(TabPertandingan{})
 	case 4:
 		Peringkat(&tim)
 	case 5:
@@ -291,4 +303,32 @@ func MenuPengguna() {
 		fmt.Println("Pilihan tidak valid")
 		MenuPengguna()
 	}
+}
+
+func tampilTim2(a TabTim, b [7]TabPemain) {
+	fmt.Println("=== DATA TIM ===")
+	for i := 0; i < 6; i++ {
+		fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5.2f\n", i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
+		fmt.Println("   Daftar Pemain:")
+		for j := 0; j < 7; j++ {
+			fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
+		}
+	}
+	MenuPengguna()
+}
+
+func TampilPertandingan2(a TabPertandingan) {
+	fmt.Println("=== JADWAL PERTANDINGAN ===")
+	for i := 0; i < 9; i++ {
+		fmt.Printf("Pertandingan %d: %s vs %s, Hari: %s\n", i+1, a[i].Tim1, a[i].Tim2, a[i].Hari)
+	}
+	MenuPengguna()
+}
+
+func TampilHasil2(a TabPertandingan) {
+	fmt.Println("=== HASIL PERTANDINGAN ===")
+	for i := 0; i < 9; i++ {
+		fmt.Printf("Pertandingan %d: %s (%s) vs %s (%s)\n", i+1, a[i].Tim1, a[i].HasilTim1, a[i].Tim2, a[i].HasilTim2)
+	}
+	MenuPengguna()
 }
