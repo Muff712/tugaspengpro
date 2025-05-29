@@ -198,54 +198,76 @@ func deleteDataMenu() error {
 }
 
 func inputTeam() {
-	if totalTeams >= MaxTeams {
-		fmt.Println("Kapasitas tim penuh")
+	var n int
+	fmt.Print("Berapa tim yang ingin dimasukkan? ")
+	fmt.Scan(&n)
+
+	if totalTeams+n > MaxTeams {
+		fmt.Printf("Kapasitas tidak cukup. Maksimal bisa menambahkan %d tim.\n", MaxTeams-totalTeams)
 		return
 	}
-	fmt.Print("Nama Tim: ")
-	fmt.Scan(&teams[totalTeams].Name)
-	totalTeams++
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("Tim ke-%d\n", i+1)
+		fmt.Print("Nama Tim: ")
+		fmt.Scan(&teams[totalTeams].Name)
+		totalTeams++
+	}
 	fmt.Println("Data tim berhasil ditambahkan.")
 }
 
 func inputPlayer() {
-	if totalPlayers >= MaxPlayers {
-		fmt.Println("Kapasitas pemain penuh")
+	var n int
+	fmt.Print("Berapa pemain yang ingin dimasukkan? ")
+	fmt.Scan(&n)
+
+	if totalPlayers+n > MaxPlayers {
+		fmt.Printf("Kapasitas tidak cukup. Maksimal bisa menambahkan %d pemain.\n", MaxPlayers-totalPlayers)
 		return
 	}
-	fmt.Print("Nama Pemain: ")
-	fmt.Scan(&players[totalPlayers].Name)
-	fmt.Print("Nama Tim: ")
-	fmt.Scan(&players[totalPlayers].TeamName)
-	totalPlayers++
+
+	for i := 0; i < n; i++ {
+		fmt.Printf("Pemain ke-%d\n", i+1)
+		fmt.Print("Nama Pemain: ")
+		fmt.Scan(&players[totalPlayers].Name)
+		fmt.Print("Nama Tim: ")
+		fmt.Scan(&players[totalPlayers].TeamName)
+		totalPlayers++
+	}
 	fmt.Println("Data pemain berhasil ditambahkan.")
 }
 
 func inputMatch() {
-	if totalMatches >= MaxMatches {
-		fmt.Println("Kapasitas pertandingan penuh")
+	var n int
+	fmt.Print("Berapa pertandingan yang ingin dimasukkan? ")
+	fmt.Scan(&n)
+
+	if totalMatches+n > MaxMatches {
+		fmt.Printf("Kapasitas tidak cukup. Maksimal bisa menambahkan %d pertandingan.\n", MaxMatches-totalMatches)
 		return
 	}
-	var team1, team2, day, result string
-	var hour int
 
-	fmt.Print("Tim 1: ")
-	fmt.Scan(&team1)
-	fmt.Print("Tim 2: ")
-	fmt.Scan(&team2)
-	fmt.Print("Hari: ")
-	fmt.Scan(&day)
-	fmt.Print("Jam (0-23): ")
-	fmt.Scan(&hour)
-	fmt.Print("Hasil (1=Tim1 menang, 2=Tim2 menang, D=Draw): ")
-	fmt.Scan(&result)
+	for i := 0; i < n; i++ {
+		var team1, team2, day, result string
+		var hour int
 
-	matches[totalMatches] = Match{Team1: team1, Team2: team2, Day: day, Hour: hour}
-	totalMatches++
+		fmt.Printf("Pertandingan ke-%d\n", i+1)
+		fmt.Print("Tim 1: ")
+		fmt.Scan(&team1)
+		fmt.Print("Tim 2: ")
+		fmt.Scan(&team2)
+		fmt.Print("Hari: ")
+		fmt.Scan(&day)
+		fmt.Print("Jam (0-23): ")
+		fmt.Scan(&hour)
+		fmt.Print("Hasil (1=Tim1 menang, 2=Tim2 menang, D=Draw): ")
+		fmt.Scan(&result)
 
-	updateStats(team1, team2, result)
-
-	fmt.Println("Data pertandingan dan statistik berhasil ditambahkan.")
+		matches[totalMatches] = Match{Team1: team1, Team2: team2, Day: day, Hour: hour}
+		updateStats(team1, team2, result)
+		totalMatches++
+	}
+	fmt.Println("Data pertandingan berhasil ditambahkan.")
 }
 
 func updateStats(team1, team2, result string) {
