@@ -229,16 +229,14 @@ func tampilData() {
 func TampilTim(a TabTim, b [9]TabPemain) {
 	fmt.Println("=== DATA TIM ===")
 	for i := 0; i < 6; i++ {
-		if a[i].Nama == "" {
-			break
-		}
-		fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5.2f\n", i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
-		fmt.Println("   Daftar Pemain:")
-		for j := 0; j < 7; j++ {
-			if b[i][j].Nama == "" {
-				break
+		if a[i].Nama != "" {
+			fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5.2f\n", i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
+			fmt.Println("   Daftar Pemain:")
+			for j := 0; j < 7; j++ {
+				if b[i][j].Nama != "" {
+					fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
+				}
 			}
-			fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
 		}
 	}
 }
