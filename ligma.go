@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	MaxTeams   = 100
-	MaxPlayers = 100
-	MaxMatches = 100
+	MaxTeams   = 6
+	MaxPlayers = 7
+	MaxMatches = 9
 )
 
 type Team struct {
