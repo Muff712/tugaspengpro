@@ -208,7 +208,7 @@ func tampilData() {
 	fmt.Scan(&pilihan)
 
 	var tim TabTim
-	var pemain [9]TabPemain
+	var pemain [7]TabPemain
 	var pertandingan TabPertandingan
 
 	switch pilihan {
@@ -226,7 +226,7 @@ func tampilData() {
 	}
 }
 
-func TampilTim(a TabTim, b [9]TabPemain) {
+func TampilTim(a TabTim, b [7]TabPemain) {
 	fmt.Println("=== DATA TIM ===")
 	for i := 0; i < 6; i++ {
 		fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5.2f\n", i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
