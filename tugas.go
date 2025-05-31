@@ -268,7 +268,7 @@ func MenuPengguna() {
 
 	switch pilihan {
 	case 1:
-		TampilTim()
+		tampilTim2(tim, pemain)
 	case 2:
 		TampilPertandingan()
 	case 3:
@@ -281,7 +281,7 @@ func MenuPengguna() {
 	}
 }
 
-func tampilTim2(a TabTim, b [7]TabPemain) {
+func tampilTim2(a TabTim, b TabArrayPemain) {
 	fmt.Println("=== DATA TIM ===")
 	dataDitemukan := false
 
