@@ -281,6 +281,10 @@ func MenuPengguna() {
 	}
 }
 
+func PeringkatTim(a TabTim) {
+
+}
+
 func tampilTim2(a TabTim, b TabArrayPemain) {
 	fmt.Println("=== DATA TIM ===")
 	dataDitemukan := false
