@@ -227,14 +227,14 @@ func InputHasil() {
 }
 
 func HitungPeringkatTim(a *TabTim) {
-	for i := 0; i < len(a)-1; i++ {
-		for j := 0; j < len(a)-i-1; j++ {
+	for i := 0; i < 5; i++ {
+		for j := 0; j < 5-i; j++ {
 			if a[j].RasioMenang < a[j+1].RasioMenang {
 				a[j], a[j+1] = a[j+1], a[j]
 			}
 		}
 	}
-	for i := 0; i < len(a); i++ {
+	for i := 0; i < 6; i++ {
 		if a[i].Nama != "" {
 			a[i].Peringkat = i + 1
 		}
