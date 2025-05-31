@@ -6,6 +6,7 @@ type Tim struct {
 	Nama                                          string
 	JumlahPertandingan, JumlahMenang, JumlahKalah int
 	RasioMenang                                   float32
+	Peringkat                                     int
 }
 
 type TabTim [6]Tim
@@ -16,7 +17,6 @@ type Pemain struct {
 }
 
 type TabPemain [7]Pemain
-
 type TabArrayPemain [6]TabPemain
 
 type Pertandingan struct {
@@ -196,8 +196,49 @@ func InputHasil() {
 		fmt.Scan(&pertandingan[i].HasilTim1)
 		fmt.Printf("Skor %s: ", pertandingan[i].Tim2)
 		fmt.Scan(&pertandingan[i].HasilTim2)
+
+		var skor1, skor2 int
+		fmt.Sscanf(pertandingan[i].HasilTim1, "%d", &skor1)
+		fmt.Sscanf(pertandingan[i].HasilTim2, "%d", &skor2)
+
+		idx1 := CariIdxTim(pertandingan[i].Tim1)
+		idx2 := CariIdxTim(pertandingan[i].Tim2)
+
+		if idx1 != -1 && idx2 != -1 {
+			tim[idx1].JumlahPertandingan++
+			tim[idx2].JumlahPertandingan++
+
+			if skor1 > skor2 {
+				tim[idx1].JumlahMenang++
+				tim[idx2].JumlahKalah++
+			} else if skor1 < skor2 {
+				tim[idx2].JumlahMenang++
+				tim[idx1].JumlahKalah++
+			}
+
+			tim[idx1].RasioMenang = float32(tim[idx1].JumlahMenang) / float32(tim[idx1].JumlahPertandingan)
+			tim[idx2].RasioMenang = float32(tim[idx2].JumlahMenang) / float32(tim[idx2].JumlahPertandingan)
+		}
 	}
+
+	HitungPeringkatTim(&tim)
+
 	MenuAdmin()
+}
+
+func HitungPeringkatTim(a *TabTim) {
+	for i := 0; i < len(a)-1; i++ {
+		for j := 0; j < len(a)-i-1; j++ {
+			if a[j].RasioMenang < a[j+1].RasioMenang {
+				a[j], a[j+1] = a[j+1], a[j]
+			}
+		}
+	}
+	for i := 0; i < len(a); i++ {
+		if a[i].Nama != "" {
+			a[i].Peringkat = i + 1
+		}
+	}
 }
 
 func tampilData() {
@@ -229,7 +270,8 @@ func TampilTim() {
 	fmt.Println("=== DATA TIM ===")
 	for i := 0; i < 6; i++ {
 		if tim[i].Nama != "" {
-			fmt.Printf("%d. %s\n", i+1, tim[i].Nama)
+			fmt.Printf("%d. %s | Peringkat: %d\n", i+1, tim[i].Nama, tim[i].Peringkat)
+			fmt.Printf("    Main: %d | Menang: %d | Kalah: %d | Rasio: %.2f\n", tim[i].JumlahPertandingan, tim[i].JumlahMenang, tim[i].JumlahKalah, tim[i].RasioMenang)
 			for j := 0; j < 7; j++ {
 				if pemain[i][j].Nama != "" {
 					fmt.Printf("    - %s (%s)\n", pemain[i][j].Nama, pemain[i][j].Posisi)
@@ -268,7 +310,7 @@ func MenuPengguna() {
 
 	switch pilihan {
 	case 1:
-		tampilTim2(tim, pemain)
+		TampilTim()
 	case 2:
 		TampilPertandingan()
 	case 3:
@@ -279,48 +321,4 @@ func MenuPengguna() {
 		fmt.Println("Pilihan tidak valid")
 		MenuPengguna()
 	}
-}
-
-func PeringkatTim(a TabTim) {
-
-}
-
-func tampilTim2(a TabTim, b TabArrayPemain) {
-	fmt.Println("=== DATA TIM ===")
-	dataDitemukan := false
-
-	for i := 0; i < 6; i++ {
-		if a[i].Nama != "" {
-			dataDitemukan = true
-			fmt.Printf("%-3d | %-15s | %-5d | %-5d | %-5d | %-5.2f\n",
-				i+1, a[i].Nama, a[i].JumlahPertandingan, a[i].JumlahMenang, a[i].JumlahKalah, a[i].RasioMenang)
-			fmt.Println("  Daftar Pemain:")
-			for j := 0; j < 7; j++ {
-				if b[i][j].Nama != "" {
-					fmt.Printf("      - %s (%s)\n", b[i][j].Nama, b[i][j].Posisi)
-				}
-			}
-		}
-	}
-
-	if !dataDitemukan {
-		fmt.Println("Belum ada data tim yang tersedia.")
-	}
-	MenuPengguna()
-}
-
-func TampilPertandingan2(a TabPertandingan) {
-	fmt.Println("=== JADWAL PERTANDINGAN ===")
-	for i := 0; i < 9; i++ {
-		fmt.Printf("Pertandingan %d: %s vs %s, Hari: %s\n", i+1, a[i].Tim1, a[i].Tim2, a[i].Hari)
-	}
-	MenuPengguna()
-}
-
-func TampilHasil2(a TabPertandingan) {
-	fmt.Println("=== HASIL PERTANDINGAN ===")
-	for i := 0; i < 9; i++ {
-		fmt.Printf("Pertandingan %d: %s (%s) vs %s (%s)\n", i+1, a[i].Tim1, a[i].HasilTim1, a[i].Tim2, a[i].HasilTim2)
-	}
-	MenuPengguna()
 }
